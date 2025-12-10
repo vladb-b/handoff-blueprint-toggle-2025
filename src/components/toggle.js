@@ -2,7 +2,13 @@ function loadMcpConfig() {
   const el = document.getElementById('mcp-config');
   if (!el) return null;
   try {
-    return JSON.parse(el.textContent);
+    const config = JSON.parse(el.textContent);
+    // Validate MCP config structure to prevent malicious data
+    if (!config || typeof config !== 'object') {
+      console.warn('Invalid MCP config: must be an object');
+      return null;
+    }
+    return config;
   } catch (e) {
     console.warn('Failed to parse MCP config', e);
     return null;
@@ -14,8 +20,24 @@ function setupToggleSwitch(root) {
   const toggle = root.querySelector('[data-role="toggle-switch"]');
   const stateLabel = root.querySelector('[data-role="toggle-state-text"]');
 
-  const allowedStates = mcp?.properties?.state?.values || ['off', 'on', 'disabled'];
-  const defaultState = mcp?.properties?.state?.default || 'off';
+  // Validate and sanitize allowed states to prevent injection
+  let allowedStates = ['off', 'on', 'disabled'];
+  if (mcp?.properties?.state?.values && Array.isArray(mcp.properties.state.values)) {
+    allowedStates = mcp.properties.state.values.filter(
+      val => typeof val === 'string' && /^[a-z_]+$/.test(val)
+    );
+    if (allowedStates.length === 0) {
+      allowedStates = ['off', 'on', 'disabled'];
+    }
+  }
+  
+  // Validate default state
+  let defaultState = 'off';
+  if (mcp?.properties?.state?.default && typeof mcp.properties.state.default === 'string') {
+    defaultState = allowedStates.includes(mcp.properties.state.default) 
+      ? mcp.properties.state.default 
+      : 'off';
+  }
 
   function isDisabledState(state) {
     if (mcp?.behaviours?.disabled === 'noInteraction') {
@@ -25,6 +47,11 @@ function setupToggleSwitch(root) {
   }
 
   function renderState(state) {
+    // Sanitize state input to prevent XSS
+    if (typeof state !== 'string') {
+      state = defaultState;
+    }
+    
     if (!allowedStates.includes(state)) {
       state = defaultState;
     }
@@ -39,7 +66,8 @@ function setupToggleSwitch(root) {
     }
 
     if (stateLabel) {
-      stateLabel.textContent = state.toUpperCase();
+      // Use textContent (not innerHTML) to prevent XSS, and ensure state is a safe string
+      stateLabel.textContent = String(state).toUpperCase();
     }
   }
 
