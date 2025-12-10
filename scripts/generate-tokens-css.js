@@ -36,8 +36,9 @@ function sanitizeCssValue(value) {
     return '';
   }
   // Block script-like patterns and HTML tags while allowing legitimate CSS syntax
-  // This allows CSS functions like calc(), var(), rgba(), but blocks <script>, </style>, etc.
-  if (/<script|<\/script|<style|<\/style|javascript:|on\w+=/i.test(value)) {
+  // This allows CSS functions like calc(), var(), rgba(), font-variation-settings, etc.
+  // but blocks <script>, </style>, javascript:, and HTML event handlers like onclick=
+  if (/<script|<\/script|<style|<\/style|javascript:|on[a-z]+\s*=/i.test(value)) {
     console.warn('Warning: Potentially unsafe CSS value blocked:', value);
     return '';
   }
