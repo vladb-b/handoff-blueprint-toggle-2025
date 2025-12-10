@@ -24,7 +24,7 @@ function setupToggleSwitch(root) {
   let allowedStates = ['off', 'on', 'disabled'];
   if (mcp?.properties?.state?.values && Array.isArray(mcp.properties.state.values)) {
     allowedStates = mcp.properties.state.values.filter(
-      val => typeof val === 'string' && /^[a-z_]+$/.test(val)
+      val => typeof val === 'string' && /^[a-zA-Z0-9_-]+$/.test(val)
     );
     if (allowedStates.length === 0) {
       allowedStates = ['off', 'on', 'disabled'];

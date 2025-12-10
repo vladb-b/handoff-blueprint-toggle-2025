@@ -35,8 +35,9 @@ function sanitizeCssValue(value) {
   if (typeof value !== 'string') {
     return '';
   }
-  // Allow alphanumeric, spaces, common CSS characters, but block potentially dangerous patterns
-  if (/[<>{}]/.test(value)) {
+  // Block script-like patterns and HTML tags while allowing legitimate CSS syntax
+  // This allows CSS functions like calc(), var(), rgba(), but blocks <script>, </style>, etc.
+  if (/<script|<\/script|<style|<\/style|javascript:|on\w+=/i.test(value)) {
     console.warn('Warning: Potentially unsafe CSS value blocked:', value);
     return '';
   }
