@@ -1,0 +1,18 @@
+:root {
+  /* Surface + text */
+  --color-surface: #141414;
+  --color-surface-elevated: #1e1e1e;
+  --color-text-primary: #f5f5f5;
+  --color-text-muted: #a3a3a3;
+
+  /* Toggle track + thumb (mapped from design/tokens.json) */
+  --color-toggle-track-off: #2A2A2A;
+  --color-toggle-track-on: #10B981;
+  --color-toggle-thumb: #FFFFFF;
+  --color-toggle-focus-outline: #6EE7B7;
+
+  /* Radius + motion */
+  --radius-full: 9999px;
+  --motion-toggle: 120ms;
+  --shadow-elevated: 0 8px 18px rgba(0, 0, 0, 0.35);
+}

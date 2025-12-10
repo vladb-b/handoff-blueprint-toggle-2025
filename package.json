@@ -1,0 +1,13 @@
+{
+  "name": "handoff-blueprint-toggle-2025",
+  "version": "1.2.0",
+  "description": "A tiny but complete A\u2192Z blueprint for modern Design \u2192 Dev \u2192 QA handoff using Figma MCP-style JSON, design tokens and Playwright.",
+  "scripts": {
+    "build:tokens": "node scripts/generate-tokens-css.js",
+    "test": "npm run build:tokens && playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  },
+  "license": "MIT"
+}

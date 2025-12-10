@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Handoff Blueprint 2025 – Toggle Switch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./styles/tokens.css" />
+    <link rel="stylesheet" href="./components/toggle.css" />
+  </head>
+  <body class="toggle-demo-container">
+    <main class="toggle-card" data-toggle-root="demo">
+      <header>
+        <div class="toggle-card-header">
+          Toggle Switch — Handoff Blueprint
+        </div>
+        <div class="toggle-card-subtitle">
+          A small component wired end-to-end: Figma MCP → tokens → implementation → Playwright tests.
+        </div>
+      </header>
+
+      <section class="toggle-wrapper" aria-label="Example toggle switch">
+        <button
+          type="button"
+          class="toggle-switch"
+          data-role="toggle-switch"
+          data-state="off"
+          role="switch"
+          aria-checked="false"
+        >
+          <span class="toggle-thumb"></span>
+        </button>
+        <span class="toggle-state-label">
+          State: <span data-role="toggle-state-text">OFF</span>
+        </span>
+      </section>
+
+      <div class="toggle-meta-row">
+        <span>Properties: size=md · state=off</span>
+        <span>Source: figma-mcp-export.json</span>
+      </div>
+    </main>
+
+    <script id="mcp-config" type="application/json">
+{
+  "componentName": "ToggleSwitch",
+  "properties": {
+    "size": {
+      "type": "enum",
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md"
+    },
+    "state": {
+      "type": "enum",
+      "values": [
+        "off",
+        "on",
+        "disabled"
+      ],
+      "default": "off"
+    }
+  },
+  "tokens": {
+    "track.off.background": "{color.neutral.700}",
+    "track.on.background": "{color.green.500}",
+    "thumb.background": "{color.neutral.0}",
+    "focus.outline": "{color.green.300}"
+  },
+  "behaviours": {
+    "onClick": "toggle(state.off,state.on)",
+    "disabled": "noInteraction"
+  },
+  "notes": {
+    "handoff": "Used by dev & QA as a contract for states, tokens and behaviour."
+  }
+}
+    </script>
+
+    <script src="./components/toggle.js"></script>
+  </body>
+</html>
