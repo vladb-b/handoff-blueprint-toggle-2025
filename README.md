@@ -1,56 +1,53 @@
-# Handoff Blueprint 2025 – ToggleSwitch (Design → Dev → QA)
+# ToggleSwitch — Design → Dev → QA
 
 ![Playwright](https://img.shields.io/badge/Playwright-Tested-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
-A small but complete example of how a single component can be wired from **Design → Dev → QA** using:
+A minimal but complete example showing how a single UI component can stay aligned across Design, Engineering, and QA using:
 
-- Figma Variables / MCP-style definition
-- JSON contracts (`design/*.json`)
-- Design tokens → generated CSS variables
-- Runtime behaviour driven by MCP
-- Playwright tests that prove alignment
+- Figma Variables / MCP-style structured definitions  
+- JSON component contracts (`design/*.json`)  
+- Design tokens → generated CSS variables  
+- Runtime behaviour driven by MCP  
+- Playwright tests proving contract alignment end-to-end  
 
-Perfect for:
-- Design × Engineering × QA portfolios
-- Handoff best-practice discussions
-- Demoing modern front-end workflows
+This project demonstrates how one source of truth can drive design intent, implementation, and test logic.
 
 ---
 
-## 🧩 Project Structure
+## Project Structure
 
-```txt
+```
 design/
   tokens.json               # Source-of-truth design tokens
   figma-mcp-export.json     # MCP-style component contract
 
 scripts/
-  generate-tokens-css.js    # Converts tokens.json → src/styles/tokens.css
+  generate-tokens-css.js    # tokens.json → src/styles/tokens.css
 
 src/
   index.html                # Demo page embedding MCP JSON
   styles/
     tokens.css              # Generated CSS variables
-    toggle.css              # Component styling using tokens
+    toggle.css              # Component UI referencing tokens only
   components/
-    toggle.js               # MCP-driven behaviour (states / disabled)
+    toggle.js               # MCP-driven behavior (states, disabled)
 
 tests/
-  toggle.spec.js            # Playwright tests (behaviour + contract alignment)
+  toggle.spec.js            # Playwright tests verifying behavior + alignment
 
 docs/
-  blueprint.md              # Design → Dev → QA explanation
+  blueprint.md              # Design → Dev → QA walkthrough
 
 .github/
-  workflows/ci.yml          # CI pipeline (Node + Playwright)
+  workflows/ci.yml          # Node + Playwright CI pipeline
 ```
 
 ---
 
-## 🚀 Getting started
+## Getting Started
 
-```bash
+```
 npm install
 npx playwright install --with-deps
 npm test
@@ -58,106 +55,102 @@ npm test
 
 `npm test` will:
 
-1. Regenerate `src/styles/tokens.css` from `design/tokens.json`
-2. Run the Playwright tests
+1. Regenerate `src/styles/tokens.css`
+2. Run all Playwright tests
 
-To view the HTML report:
+To open the HTML report:
 
-```bash
+```
 npx playwright show-report
 ```
 
 ---
 
-## 🎨 Figma Setup (high level)
+## Figma Setup (Overview)
 
-You can mirror this setup in Figma using **Variables**:
+To mirror this repo inside Figma:
 
 1. Create a collection: `Design Tokens (2025)`
-2. Add color variables:
-   - `color.neutral.0`   → `#FFFFFF`
-   - `color.neutral.700` → `#2A2A2A`
-   - `color.neutral.900` → `#141414`
-   - `color.green.300`   → `#6EE7B7`
-   - `color.green.500`   → `#10B981`
-3. Build a `ToggleSwitch` component with properties:
-   - `state`: `off | on | disabled`
-   - `size`: `sm | md | lg`
-4. Use these variables for track and thumb fills.
+2. Add color variables:  
+   - `color.neutral.0` → `#FFFFFF`  
+   - `color.neutral.700` → `#2A2A2A`  
+   - `color.neutral.900` → `#141414`  
+   - `color.green.300` → `#6EE7B7`  
+   - `color.green.500` → `#10B981`
+3. Create a `ToggleSwitch` component with:  
+   - `state: off | on | disabled`  
+   - `size: sm | md | lg`
+4. Apply variables for all fills and styles.
 
-These map directly to `design/tokens.json` and then to CSS variables used in `toggle.css`.
+These map directly into `design/tokens.json` → CSS variables → component logic.
 
-For a detailed walkthrough, see [`docs/blueprint.md`](docs/blueprint.md).
-
----
-
-## 📜 MCP-style Contract
-
-The MCP-style description of the component is in:
-
-- `design/figma-mcp-export.json`
-
-It defines:
-
-- allowed properties and values (size, state)
-- default values
-- which tokens to use for which visual roles
-- behaviour rules (e.g. `disabled: "noInteraction"`)
-
-Both dev and QA rely on this file as a shared contract.
+For a detailed blueprint, see: `docs/blueprint.md`.
 
 ---
 
-## 🎛 Implementation (Dev)
+## MCP Component Contract
 
-Key ideas in `src/components/toggle.js`:
+`design/figma-mcp-export.json` defines:
 
-- Reads MCP JSON from `<script id="mcp-config">` in `index.html`
-- Uses MCP to determine:
-  - allowed states (`off`, `on`, `disabled`)
-  - default state (`off`)
-  - whether `disabled` blocks interaction
-- Updates ARIA attributes (`role="switch"`, `aria-checked`, `aria-disabled`)
-- Renders the visual state via `data-state` attributes mapped to CSS
+- Allowed component properties and values  
+- Default state configuration  
+- Token references for each visual role  
+- Behaviour rules (e.g., `disabled: "noInteraction"`)  
 
-Styles in `src/components/toggle.css` only reference CSS variables, never raw hex codes.
+Development and QA consume this file as a shared contract to prevent drift.
 
 ---
 
-## 🧪 Tests (QA)
+## Implementation
 
-`tests/toggle.spec.js` contains two tests:
+`src/components/toggle.js`:
 
-1. **Behaviour (MCP-driven)**  
-   Toggles through `OFF → ON → OFF` and asserts both DOM attributes and visible state text.
-
-2. **MCP, tokens and CSS alignment**  
-   - Reads `design/figma-mcp-export.json` and `design/tokens.json`
-   - Resolves token references like `{color.green.500}`
-   - Asserts they equal the expected token values
-   - Reads `:root` CSS variables and checks they match token values at runtime
-
-This way QA can prove that **Design → Tokens → CSS → Component** are all in sync.
+- Reads MCP config from `<script id="mcp-config">`  
+- Applies allowed states and default values  
+- Updates ARIA attributes (`role="switch"`, `aria-checked`, `aria-disabled`)  
+- Drives visuals using `data-state` attributes  
+- Uses only CSS variables for styling (no hard-coded hex values)
 
 ---
 
-## 🧩 Suggested GitHub Topics
+## Tests
 
-You can tag the repo with:
+`tests/toggle.spec.js` includes:
 
-`design-system` · `figma` · `tokens` · `playwright` · `qa-automation` · `handoff` · `frontend` · `mcp`
+### 1. Behaviour Test
+- Toggles `off → on → off`  
+- Asserts DOM attributes, accessible state, and visible text
+
+### 2. Contract → Tokens → CSS Alignment Test
+- Reads `figma-mcp-export.json` and `tokens.json`  
+- Resolves token references (`{color.green.500}` → hex)  
+- Checks that `:root` CSS variables match token values at runtime  
+
+This validates alignment across the full chain:
+**Design → Tokens → CSS → Component → Tests**.
 
 ---
 
-## 🤝 Contributing
+## Suggested GitHub Topics
+
+`design-system` · `figma` · `mcp` · `tokens` · `qa-automation` · `playwright` · `handoff` · `frontend`
+
+---
+
+## Author
+
+**Vlad Babayan**  
+Design-Driven Quality Engineering · GenAI Automation · Product Workflows  
+LinkedIn: https://www.linkedin.com/in/vladbabayan  
+Portfolio: https://vlad.figma.site
+
+---
+
+## Contributing
 
 PRs are welcome.
 
-Before submitting:
-
-```bash
+```
 npm install
 npm test
 ```
-
-If you extend this blueprint with more components or a richer MCP schema, feel free to fork and adapt.
